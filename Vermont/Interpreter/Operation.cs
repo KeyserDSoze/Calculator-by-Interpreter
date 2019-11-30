@@ -2,35 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
-namespace Vermont
+namespace Calculator
 {
-    public class Computer : IOperation
-    {
-        private static readonly List<IOperation> Operations = new List<IOperation>();
-        static Computer()
-        {
-            Operations.Add(new MultiplyDivider());
-            Operations.Add(new AddSubtracter());
-        }
-        public Context Calculate(Context context)
-        {
-            foreach (IOperation operation in Operations)
-                context = operation.Calculate(context);
-            return context;
-        }
-    }
-    public interface IOperation
-    {
-        Context Calculate(Context context);
-    }
-
     public abstract class Operation : IOperation
     {
         private static string Number = "0123456789";
         public abstract char[] Operations { get; }
-        public Context Calculate(Context context)
+        public virtual Context Calculate(Context context)
         {
             string entry = context.Entry;
             for (int i = 0; i < entry.Length; i++)
@@ -74,19 +53,5 @@ namespace Vermont
                     throw new ArgumentException($"Operation {operation} is not implemented.");
             }
         }
-    }
-    public class MultiplyDivider : Operation
-    {
-        public override char[] Operations => new char[2] { '*', '/' };
-    }
-    public class AddSubtracter : Operation
-    {
-        public override char[] Operations => new char[2] { '+', '-' };
-    }
-    public class Context
-    {
-        public decimal Result => decimal.Parse(this.Entry);
-        public string Entry { get; }
-        public Context(string entry) => this.Entry = entry.Replace(" ", string.Empty);
     }
 }
